@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="lbvh">
+      <UniqueIdentifier>{e7dc9ae3-6d9d-495b-8c1c-c0ce7f30e22e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GPU4UE">
+      <UniqueIdentifier>{c936a7e0-39d6-415a-9553-b3f4d0d8d8bc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="bvh.cuh">
+      <Filter>lbvh</Filter>
+    </CudaCompile>
+    <CudaCompile Include="utility.cuh">
+      <Filter>lbvh</Filter>
+    </CudaCompile>
+    <CudaCompile Include="main.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="aabb.cuh">
+      <Filter>lbvh</Filter>
+    </ClInclude>
+    <ClInclude Include="morton_code.cuh">
+      <Filter>lbvh</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.cuh">
+      <Filter>GPU4UE</Filter>
+    </ClInclude>
+    <ClInclude Include="GPU4UETest.cuh">
+      <Filter>GPU4UE</Filter>
+    </ClInclude>
+    <ClInclude Include="lbvh.cuh" />
+    <ClInclude Include="CudaHeader.cuh" />
+  </ItemGroup>
+</Project>
