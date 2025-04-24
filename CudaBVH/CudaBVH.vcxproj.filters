@@ -16,6 +16,10 @@
       <Filter>lbvh</Filter>
     </CudaCompile>
     <CudaCompile Include="main.cu" />
+    <CudaCompile Include="GPU4UEInterfaces.cu">
+      <Filter>GPU4UE</Filter>
+    </CudaCompile>
+    <CudaCompile Include="CudaHeader.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aabb.cuh">
@@ -42,6 +46,12 @@
       <Filter>GPU4UE</Filter>
     </ClInclude>
     <ClInclude Include="RayCuda.cuh">
+      <Filter>GPU4UE</Filter>
+    </ClInclude>
+    <ClInclude Include="GPU4UEInterfaces.cuh">
+      <Filter>GPU4UE</Filter>
+    </ClInclude>
+    <ClInclude Include="ParallelRaysIntersectionWithCuda.cuh">
       <Filter>GPU4UE</Filter>
     </ClInclude>
   </ItemGroup>

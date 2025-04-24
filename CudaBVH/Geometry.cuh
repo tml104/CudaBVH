@@ -4,6 +4,7 @@
 #include <vector_types.h>
 #include <vector_functions.h>
 
+#include "bvh.cuh"
 #include "aabb.cuh"
 #include "utility.cuh"
 
