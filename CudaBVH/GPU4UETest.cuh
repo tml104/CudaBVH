@@ -142,6 +142,7 @@ namespace GPU4UE
             float dy = (edy - sty) / numRays;
 
             rays[i].dir = normalize(float4{ 0.0f, sty + dy * i, 1.0f, 0.0f }); // 稍微不同的方向
+            rays[i].t = 9.0f;
         }
 
         //triangles

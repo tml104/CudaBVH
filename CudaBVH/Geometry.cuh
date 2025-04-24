@@ -80,6 +80,7 @@ namespace GPU4UE
 
 		typename VecType origin;
 		typename VecType dir;
+		typename VecTypeReal<VecType>::type t;
 	};
 
 	template<>
@@ -89,14 +90,14 @@ namespace GPU4UE
 
 		typename VecType origin;
 		typename VecType dir;
+		typename VecTypeReal<VecType>::type t;
 	};
 
 	template<typename VecType, typename Real = VecTypeReal<VecType>::type>
 	__device__ __host__ bool RayAABBIntersect(RayCuda<VecType> ray, lbvh::aabb<Real> box)
 	{
 		const Real EPSILON = 1e-6;
-		
-		bool t_updated = false;
+	
 		Real t_enter = 0.0f;
 		Real t_exit = std::numeric_limits<Real>::max();
 
@@ -115,7 +116,7 @@ namespace GPU4UE
 		}
 		else
 		{
-			// ray.dir.x 近似为 0，射线平行于 X 轴，检查 ray.origin.x 是否在 AABB 的 x 范围内
+			// ray.dir.x 近似为 0，检查 ray.origin.x 是否在 AABB 的 x 范围内
 			if (ray.origin.x < box.lower.x || ray.origin.x > box.upper.x) return false;
 		}
 
@@ -155,64 +156,7 @@ namespace GPU4UE
 			if (ray.origin.z < box.lower.z || ray.origin.z > box.upper.z) return false;
 		}
 
-		return (t_exit >= 0.0f); // 最终的相交条件
-
-
-		//if (! (ray.dir.x< EPSILON && ray.dir.x>-EPSILON) )
-		//{
-		//	Real t1 = (box.lower.x - ray.origin.x) / ray.dir.x;
-		//	Real t2 = (box.upper.x - ray.origin.x) / ray.dir.x;
-
-		//	if (t_updated)
-		//	{
-		//		t_enter = fmax(t_enter, t1);
-		//		t_exit = fmin(t_exit, t2);
-		//	}
-		//	else
-		//	{
-		//		t_enter = t1;
-		//		t_exit = t2;
-		//		t_updated = true;
-		//	}
-		//}
-
-		//if (!(ray.dir.y< EPSILON && ray.dir.y>-EPSILON))
-		//{
-		//	Real t1 = (box.lower.y - ray.origin.y) / ray.dir.y;
-		//	Real t2 = (box.upper.y - ray.origin.y) / ray.dir.y;
-
-		//	if (t_updated)
-		//	{
-		//		t_enter = fmax(t_enter, t1);
-		//		t_exit = fmin(t_exit, t2);
-		//	}
-		//	else
-		//	{
-		//		t_enter = t1;
-		//		t_exit = t2;
-		//		t_updated = true;
-		//	}
-		//}
-
-		//if (!(ray.dir.z< EPSILON && ray.dir.z>-EPSILON))
-		//{
-		//	Real t1 = (box.lower.z - ray.origin.z) / ray.dir.z;
-		//	Real t2 = (box.upper.z - ray.origin.z) / ray.dir.z;
-
-		//	if (t_updated)
-		//	{
-		//		t_enter = fmax(t_enter, t1);
-		//		t_exit = fmin(t_exit, t2);
-		//	}
-		//	else
-		//	{
-		//		t_enter = t1;
-		//		t_exit = t2;
-		//		t_updated = true;
-		//	}
-		//}
-
-		//return (t_updated && t_exit >= 0.0f && t_enter < t_exit);
+		return (t_exit >= 0.0f && t_enter <= ray.t); // 最终的相交条件
 
 	}
 
@@ -291,7 +235,7 @@ namespace GPU4UE
 		}
 
 		*t = dot(edge2, qvec) * inv_det;
-		return *t > EPSILON;
+		return (*t > EPSILON && *t<ray.t);
 	}
 
 	template<typename VecType, typename Real = VecTypeReal<VecType>::type>
