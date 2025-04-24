@@ -32,5 +32,17 @@
     </ClInclude>
     <ClInclude Include="lbvh.cuh" />
     <ClInclude Include="CudaHeader.cuh" />
+    <ClInclude Include="TriangleCudaAABBGetter.cuh">
+      <Filter>GPU4UE</Filter>
+    </ClInclude>
+    <ClInclude Include="TriangleCuda.cuh">
+      <Filter>GPU4UE</Filter>
+    </ClInclude>
+    <ClInclude Include="VecType.cuh">
+      <Filter>GPU4UE</Filter>
+    </ClInclude>
+    <ClInclude Include="RayCuda.cuh">
+      <Filter>GPU4UE</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

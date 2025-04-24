@@ -10,6 +10,7 @@
 
 #include "Geometry.cuh"
 #include "CudaHeader.cuh"
+#include "TriangleCudaAABBGetter.cuh"
 
 #include "bvh.cuh"
 #include "aabb.cuh"
@@ -55,7 +56,6 @@ namespace GPU4UE
     )
     {
         using bvh_type = lbvh::detail::basic_device_bvh<Real, Objects, IsConst>;
-
 
         RayCuda<VecType>* dev_rays;
         int* dev_res;

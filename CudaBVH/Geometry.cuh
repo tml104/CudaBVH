@@ -7,91 +7,16 @@
 #include "aabb.cuh"
 #include "utility.cuh"
 
+#include "VecType.cuh"
+#include "RayCuda.cuh"
+#include "TriangleCuda.cuh"
+
 #include <algorithm>
 #include <cmath>
 #include <limits>
 
 namespace GPU4UE
 {
-	// --- VecType
-	template<typename T> struct VecTypeReal;
-
-	template<>
-	struct VecTypeReal<float4> { using type = float; };
-
-	template<>
-	struct VecTypeReal<double4> { using type = double; };
-
-
-	// --- TriangleCuda
-	template<typename T> struct TriangleCuda;
-
-	template<>
-	struct TriangleCuda<float4>
-	{
-		using VecType = float4;
-
-		typename VecType vertices[3];
-	};
-
-	template<>
-	struct TriangleCuda<double4>
-	{
-		using VecType = double4;
-
-		typename VecType vertices[3];
-	};
-
-
-
-	struct TriangleCudaAABBGetter
-	{
-		__device__ __host__ lbvh::aabb<float> operator()(const TriangleCuda<float4> triangle) const noexcept
-		{
-			lbvh::aabb<float> retval;
-			retval.upper = triangle.vertices[0];
-			retval.lower = triangle.vertices[0];
-
-			for (int i = 1; i < 3; i++)
-			{
-				retval.upper.x = fmax(retval.upper.x, triangle.vertices[i].x);
-				retval.upper.y = fmax(retval.upper.y, triangle.vertices[i].y);
-				retval.upper.z = fmax(retval.upper.z, triangle.vertices[i].z);
-
-				retval.lower.x = fmin(retval.lower.x, triangle.vertices[i].x);
-				retval.lower.y = fmin(retval.lower.y, triangle.vertices[i].y);
-				retval.lower.z = fmin(retval.lower.z, triangle.vertices[i].z);
-			}
-
-			return retval;
-		}
-	};
-
-
-	// --- TriangleCuda End
-
-	// --- RayCuda
-	template<typename T> struct RayCuda;
-
-	template<>
-	struct RayCuda<float4>
-	{
-		using VecType = float4;
-
-		typename VecType origin;
-		typename VecType dir;
-		typename VecTypeReal<VecType>::type t;
-	};
-
-	template<>
-	struct RayCuda<double4>
-	{
-		using VecType = double4;
-
-		typename VecType origin;
-		typename VecType dir;
-		typename VecTypeReal<VecType>::type t;
-	};
 
 	template<typename VecType, typename Real = VecTypeReal<VecType>::type>
 	__device__ __host__ bool RayAABBIntersect(RayCuda<VecType> ray, lbvh::aabb<Real> box)
@@ -163,46 +88,7 @@ namespace GPU4UE
 
 	// --- RayCuda End
 
-	template<typename VecType, typename Real = VecTypeReal<VecType>::type>
-	__device__ __host__ VecType subtract(const VecType& a, const VecType& b)
-	{
-		return { a.x - b.x, a.y - b.y, a.z - b.z, 0.0f };
-	}
 
-	template<typename VecType, typename Real = VecTypeReal<VecType>::type>
-	__device__ __host__ VecType cross(const VecType& a, const VecType& b)
-	{
-		return {
-			a.y * b.z - a.z * b.y,
-			a.z * b.x - a.x * b.z,
-			a.x * b.y - a.y * b.x,
-			0.0f
-		};
-	}
-
-	template<typename VecType, typename Real = VecTypeReal<VecType>::type>
-	__device__ __host__ Real dot(const VecType& a, const VecType& b)
-	{
-		return a.x * b.x + a.y * b.y + a.z * b.z;
-	}
-
-	template<typename VecType, typename Real = VecTypeReal<VecType>::type>
-	__device__ __host__ Real length(const VecType& v)
-	{
-		return sqrtf(dot(v, v));
-	}
-
-	template<typename VecType, typename Real = VecTypeReal<VecType>::type>
-	__device__ __host__ VecType normalize(const VecType& v)
-	{
-		Real len = length(v);
-		if (len == 0.0f)
-		{
-			return { 0.0f, 0.0f, 0.0f, 0.0f };
-		}
-
-		return { v.x / len, v.y / len, v.z / len, 0.0f };
-	}
 
 	template<typename VecType, typename Real = VecTypeReal<VecType>::type>
 	__device__ __host__ bool RayTriangleIntersect(RayCuda<VecType> ray, TriangleCuda<VecType> triangle, Real* t)
