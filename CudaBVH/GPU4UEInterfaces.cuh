@@ -12,8 +12,9 @@
 
 namespace GPU4UE
 {
-	void ParallelRaysIntersectionWithBVHCuda2(std::vector<RayCuda<float4>>& rays, int* results, const std::vector<TriangleCuda<float4>>& triangles = std::vector<TriangleCuda<float4>>{});
+	void InitBVH(const std::vector<TriangleCuda<float4>>& triangles);
 
+	void ParallelRaysIntersectionWithBVHCuda2(std::vector<RayCuda<float4>>& rays, int* results);
 
 	int Test(int a, int b);
 }

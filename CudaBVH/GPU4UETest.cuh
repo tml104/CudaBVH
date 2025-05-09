@@ -8,12 +8,16 @@
 #include <iostream>
 #include <cstdio>
 
+#include <thread>
+
 #include "Geometry.cuh"
 #include "TriangleCudaAABBGetter.cuh"
 #include "ParallelRaysIntersectionWithCuda.cuh"
 
 #include "bvh.cuh"
 #include "aabb.cuh"
+
+#include "GPU4UEInterfaces.cuh"
 
 namespace GPU4UE
 {
@@ -208,6 +212,104 @@ namespace GPU4UE
     }
 
 
+    void Test3()
+    {
+        // rays
+        int numRays = 100;
+        std::vector<RayCuda<float4>> rays(numRays);
+        for (int i = 0; i < numRays; ++i) {
+            rays[i].origin = float4{ 0.0f, 0.0f, 0.0f, 0.0f };
+            //rays[i].dir = normalize_h({ 1.0f, (float)i / numRays - 0.5f, 0.0f }); // 稍微不同的方向
 
+            float sty = -10.0f, edy = 10.0f;
+            float dy = (edy - sty) / numRays;
+
+            rays[i].dir = normalize(float4{ 0.0f, sty + dy * i, 1.0f, 0.0f }); // 稍微不同的方向
+            rays[i].t = 9.0f;
+        }
+
+        //triangles
+        int numTriangles = 3;
+        std::vector<TriangleCuda<float4>> triangles(numTriangles);
+        for (int i = 0; i < numTriangles; i++)
+        {
+            if (i == 0)
+            {
+                triangles[i] = {
+                    float4{-1.0f, -1.0f, 2.0f, 0.0f},
+                    float4{1.0f, -1.0f, 2.0f, 0.0f},
+                    float4{0.0f, 1.0f, 2.0f, 0.0f}
+                };
+            }
+            else if (i == 1)
+            {
+                triangles[i] = triangles[0];
+                triangles[i].vertices[0].y += 7.0f;
+                triangles[i].vertices[1].y += 7.0f;
+                triangles[i].vertices[2].y += 7.0f;
+            }
+            else if (i == 2)
+            {
+                triangles[i] = triangles[0];
+                triangles[i].vertices[0].y += -9.0f;
+                triangles[i].vertices[1].y += -9.0f;
+                triangles[i].vertices[2].y += -9.0f;
+            }
+        }
+
+        InitBVH(triangles);
+
+        //std::vector<int> results(numRays, 1);
+        //ParallelRaysIntersectionWithBVHCuda2(rays, results.data());
+
+        //for (int i = 0; i < numRays; i++)
+        //{
+        //    std::cout << results[i] << " ";
+        //}
+        //std::cout << std::endl;
+
+        // 测试多线程
+        const int THREAD_NUM = 100;
+
+        std::vector<int> results_array[THREAD_NUM];
+
+
+
+        //for (int i = 0; i < THREAD_NUM; i++)
+        //{
+        //    results_array[i].resize(numRays);
+        //}
+
+        auto task_fun = [&](const int index) {
+            results_array[index].resize(numRays);
+
+            ParallelRaysIntersectionWithBVHCuda2(rays, results_array[index].data());
+        };
+
+        std::vector<std::thread> threads;
+
+        for (int i = 0; i < THREAD_NUM; i++)
+        {
+            threads.emplace_back(task_fun, i);
+        }
+        
+        for (auto& t : threads)
+        {
+            t.join();
+        }
+
+        for (int h = 0; h < THREAD_NUM; h++)
+        {
+            std::cout << "Thread " << h << " Results:" << std::endl;
+
+            for (int i = 0; i < numRays; i++)
+            {
+                std::cout << results_array[h][i] << " ";
+            }
+            std::cout << std::endl;
+
+        }
+
+    }
 
 }
