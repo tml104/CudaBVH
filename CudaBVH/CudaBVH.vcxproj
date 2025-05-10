@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aabb.cuh" />
+    <ClInclude Include="BoundBoxCuda.cuh" />
     <ClInclude Include="CudaHeader.cuh" />
     <ClInclude Include="Geometry.cuh" />
     <ClInclude Include="GPU4UEInterfaces.cuh" />

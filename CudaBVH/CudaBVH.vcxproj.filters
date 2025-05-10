@@ -54,5 +54,8 @@
     <ClInclude Include="ParallelRaysIntersectionWithCuda.cuh">
       <Filter>GPU4UE</Filter>
     </ClInclude>
+    <ClInclude Include="BoundBoxCuda.cuh">
+      <Filter>GPU4UE</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

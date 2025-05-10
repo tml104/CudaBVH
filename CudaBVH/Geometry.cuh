@@ -11,6 +11,7 @@
 #include "VecType.cuh"
 #include "RayCuda.cuh"
 #include "TriangleCuda.cuh"
+#include "BoundBoxCuda.cuh"
 
 #include <algorithm>
 #include <cmath>
@@ -223,4 +224,35 @@ namespace GPU4UE
 		}
 
 	}
+
+	
+	// TEMP: GetOutRaysKernel暂时写在这
+
+	/*
+		dev_cells: Cell数组。数组元素个数理论上为gridDim.y
+		dev_meshboxes: Mesh包围盒数组。数组元素个数理论上为gridDim.x
+		dev_out_rays：输出光线数组。数组元素个数理论上为 gridDim.y * gridDim.x * blockDim.y * blockDim.x
+
+		BoundBoxCuda和RayCuda可以去对应头文件看
+	*/
+
+	__device__ void GetOutRaysKernel(BoundBoxCuda* dev_cells, BoundBoxCuda* dev_meshboxes, RayCuda<float4>* dev_out_rays)
+	{
+		const unsigned int cell_sample_id = threadIdx.x;
+		const unsigned int meshbox_sample_id = threadIdx.y;
+
+		const unsigned int cell_id = blockIdx.x;
+		const unsigned int meshbox_id = blockIdx.y;
+
+		const unsigned int bid = blockIdx.y * gridDim.x + blockIdx.x; // block id
+		const unsigned int tid = threadIdx.y * blockDim.x + threadIdx.x; // thread id
+		
+		const unsigned int threads_per_block = blockDim.x * blockDim.y;
+		const unsigned int index = bid * threads_per_block + tid;
+
+		// TODO: 把pvs里面的采样逻辑缝过来
+		// 注意用下标的时候要有越界判断。关于这点可以参考一下前面的写法
+		//dev_cells[cell_id].min_x
+	}
+
 }
