@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -29,6 +29,7 @@
     <ClInclude Include="GPU4UEInterfaces.cuh" />
     <ClInclude Include="GPU4UETest.cuh" />
     <ClInclude Include="lbvh.cuh" />
+    <ClInclude Include="MonteCarlo.cuh" />
     <ClInclude Include="morton_code.cuh" />
     <ClInclude Include="ParallelRaysIntersectionWithCuda.cuh" />
     <ClInclude Include="RayCuda.cuh" />

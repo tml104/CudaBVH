@@ -7,6 +7,9 @@
     <Filter Include="GPU4UE">
       <UniqueIdentifier>{c936a7e0-39d6-415a-9553-b3f4d0d8d8bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GPU4UE\CudaTestInclude">
+      <UniqueIdentifier>{635aa63a-56e0-4533-b60d-da5eacecf0a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="bvh.cuh">
@@ -39,23 +42,24 @@
     <ClInclude Include="TriangleCudaAABBGetter.cuh">
       <Filter>GPU4UE</Filter>
     </ClInclude>
-    <ClInclude Include="TriangleCuda.cuh">
-      <Filter>GPU4UE</Filter>
-    </ClInclude>
-    <ClInclude Include="VecType.cuh">
-      <Filter>GPU4UE</Filter>
-    </ClInclude>
-    <ClInclude Include="RayCuda.cuh">
-      <Filter>GPU4UE</Filter>
-    </ClInclude>
-    <ClInclude Include="GPU4UEInterfaces.cuh">
-      <Filter>GPU4UE</Filter>
-    </ClInclude>
     <ClInclude Include="ParallelRaysIntersectionWithCuda.cuh">
       <Filter>GPU4UE</Filter>
     </ClInclude>
+    <ClInclude Include="MonteCarlo.cuh" />
     <ClInclude Include="BoundBoxCuda.cuh">
-      <Filter>GPU4UE</Filter>
+      <Filter>GPU4UE\CudaTestInclude</Filter>
+    </ClInclude>
+    <ClInclude Include="GPU4UEInterfaces.cuh">
+      <Filter>GPU4UE\CudaTestInclude</Filter>
+    </ClInclude>
+    <ClInclude Include="RayCuda.cuh">
+      <Filter>GPU4UE\CudaTestInclude</Filter>
+    </ClInclude>
+    <ClInclude Include="TriangleCuda.cuh">
+      <Filter>GPU4UE\CudaTestInclude</Filter>
+    </ClInclude>
+    <ClInclude Include="VecType.cuh">
+      <Filter>GPU4UE\CudaTestInclude</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
