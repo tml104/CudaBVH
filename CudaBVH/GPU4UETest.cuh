@@ -13,6 +13,7 @@
 #include "Geometry.cuh"
 #include "TriangleCudaAABBGetter.cuh"
 #include "ParallelRaysIntersectionWithCuda.cuh"
+#include "BoundBoxCuda.cuh"
 
 #include "bvh.cuh"
 #include "aabb.cuh"
@@ -269,9 +270,9 @@ namespace GPU4UE
         //std::cout << std::endl;
 
         // 测试多线程
-        const int THREAD_NUM = 100;
+        const int TEST3_THREAD_NUM = 100;
 
-        std::vector<int> results_array[THREAD_NUM];
+        std::vector<int> results_array[TEST3_THREAD_NUM];
 
 
 
@@ -288,7 +289,7 @@ namespace GPU4UE
 
         std::vector<std::thread> threads;
 
-        for (int i = 0; i < THREAD_NUM; i++)
+        for (int i = 0; i < TEST3_THREAD_NUM; i++)
         {
             threads.emplace_back(task_fun, i);
         }
@@ -298,7 +299,7 @@ namespace GPU4UE
             t.join();
         }
 
-        for (int h = 0; h < THREAD_NUM; h++)
+        for (int h = 0; h < TEST3_THREAD_NUM; h++)
         {
             std::cout << "Thread " << h << " Results:" << std::endl;
 
@@ -312,4 +313,61 @@ namespace GPU4UE
 
     }
 
+
+    /*
+        测试GPU上的包围盒上光线采样
+    */
+    void Test4()
+    {
+        std::vector<BoundBoxCuda> test_cells, test_meshboxes;
+
+        for (int i = 0; i < 3; i++)
+        {
+            test_cells.push_back(
+                {
+                    { 1.0f * i, 0.0f, 0.0f, 0.0f },
+                    { 1.0f * (i+1), 1.0f, 1.0f, 0.0f }
+                }
+            );
+
+
+            test_meshboxes.push_back(
+                {
+                    { 1.0f * i, 5.0f, 5.0f, 0.0f },
+                    { 1.0f * (i + 1), 6.0f, 6.0f, 0.0f }
+                }
+            );
+        }
+
+
+        InitCellBoundsCuda(test_cells);
+        InitMeshBoundsCuda(test_meshboxes);
+
+        InitOutRaysCuda(test_cells.size(), test_meshboxes.size(), 1, 1);
+        ComputeOutRaysCuda(test_cells.size(), test_meshboxes.size(), 1, 1, 0, 0);
+
+        std::vector<RayCuda<float4>> test_out_rays = GetOutRaysFromCuda();
+
+
+        for (int i = 0; i < test_out_rays.size(); i++)
+        {
+            RayCuda<float4>& ray = test_out_rays[i];
+            std::cout << "i: " << i << std::endl;
+            std::cout << "(" << ray.origin.x << ", " << ray.origin.y << ", " << ray.origin.z << ")";
+            std::cout << "(" << ray.dir.x << ", " << ray.dir.y << ", " << ray.dir.z << ")";
+
+            // 计算一下end
+            float4 end_point;
+            end_point.x = ray.origin.x + (ray.dir.x * ray.t);
+            end_point.y = ray.origin.y + (ray.dir.y * ray.t);
+            end_point.z = ray.origin.z + (ray.dir.z * ray.t);
+
+
+            std::cout << " t: " << ray.t << " ";
+
+            std::cout << "(" << end_point.x << ", " << end_point.y << ", " << end_point.z << ")";
+
+            std::cout << std::endl;
+        }
+    }
 }

@@ -84,8 +84,36 @@ namespace GPU4UE
         CUDA_CALL(cudaFree(bvh_dev));
     }
 
+    template<typename VecType, typename Real, typename Objects, bool IsConst>
+    void ParallelRaysIntersectionWithBVHAndRaysCuda(
+        RayCuda<VecType>* dev_rays,
+        size_t numRays,
+        const lbvh::detail::basic_device_bvh<Real, Objects, IsConst>& bvh,
+        int* results
+    )
+    {
+        using bvh_type = lbvh::detail::basic_device_bvh<Real, Objects, IsConst>;
+        int* dev_res;
+        bvh_type* bvh_dev;
 
+        CUDA_CALL(cudaSetDevice(0));
+        CUDA_CALL(cudaMalloc((void**)&dev_res, numRays * sizeof(int)));
+        CUDA_CALL(cudaMalloc((void**)&bvh_dev, sizeof(bvh_type)));
 
+        CUDA_CALL(cudaMemcpy(bvh_dev, &bvh, sizeof(bvh_type), cudaMemcpyHostToDevice));
+        
+        // TODO: 数值有待调整
+        size_t threadsPerBlock = 256;
+        size_t blocksPerGrid = (numRays + threadsPerBlock - 1) / threadsPerBlock;
 
+        RaysTrianglesIntersectionWithBVHKernel << < blocksPerGrid, threadsPerBlock >> > (dev_rays, numRays, bvh_dev, dev_res);
 
+        CUDA_CALL(cudaGetLastError());
+        CUDA_CALL(cudaDeviceSynchronize());
+
+        CUDA_CALL(cudaMemcpy(results, dev_res, numRays * sizeof(int), cudaMemcpyDeviceToHost));
+
+        CUDA_CALL(cudaFree(dev_res));
+        CUDA_CALL(cudaFree(bvh_dev));
+    }
 }

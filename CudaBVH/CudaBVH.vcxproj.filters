@@ -61,5 +61,8 @@
     <ClInclude Include="VecType.cuh">
       <Filter>GPU4UE\CudaTestInclude</Filter>
     </ClInclude>
+    <ClInclude Include="ComputeOutRaysWithCuda.cuh">
+      <Filter>GPU4UE</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
