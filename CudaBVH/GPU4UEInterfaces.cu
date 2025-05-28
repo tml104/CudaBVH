@@ -21,6 +21,8 @@ namespace GPU4UE
 	static RayCuda<float4>* dev_out_rays = nullptr;
 	static size_t dev_out_rays_length = 0;
 
+	static int* host_results = nullptr;
+
 	void InitBVH(const std::vector<TriangleCuda<float4>>& triangles)
 	{
 		bvh.assign(triangles.begin(), triangles.end());
@@ -78,6 +80,22 @@ namespace GPU4UE
 		dev_out_rays_length = length;
 
 		CUDA_CALL(cudaMalloc((void**)&dev_out_rays, length * sizeof(RayCuda<float4>)));
+	}
+
+	void InitResults(size_t num_cells, size_t num_meshboxes, size_t num_cell_sample, size_t num_meshbox_sample)
+	{
+		CUDA_CALL(cudaSetDevice(0));
+
+		if (host_results)
+		{
+			CUDA_CALL(cudaFreeHost(host_results));
+			host_results = nullptr;
+		}
+
+		size_t length = num_cells * num_meshboxes * num_cell_sample * num_meshbox_sample;
+		dev_out_rays_length = length;
+
+		CUDA_CALL(cudaMallocHost((void**)&host_results, length * sizeof(int)));
 	}
 
 	// 多线程call this
@@ -144,6 +162,26 @@ namespace GPU4UE
 
 		// 利用gpu bvh求交
 		ParallelRaysIntersectionWithBVHAndRaysCuda(dev_out_rays, num_rays, bvh_dev, results);
+	}
+
+	void ParallelRaysIntersectionWithBVHCuda3()
+	{
+		size_t num_rays = dev_out_rays_length;
+
+		static const auto bvh_dev = bvh.get_device_repr();
+
+		// 利用gpu bvh求交
+		ParallelRaysIntersectionWithBVHAndRaysCuda(dev_out_rays, num_rays, bvh_dev, host_results);
+	}
+
+	int* GetHostResults()
+	{
+		return host_results;
+	}
+
+	size_t GetDevOutRaysLength()
+	{
+		return dev_out_rays_length;
 	}
 
 	int Test(int a, int b)

@@ -319,6 +319,7 @@ namespace GPU4UE
     */
     void Test4()
     {
+        // cells & meshbox
         std::vector<BoundBoxCuda> test_cells, test_meshboxes;
 
         for (int i = 0; i < 3; i++)
@@ -339,12 +340,16 @@ namespace GPU4UE
             );
         }
 
-
         InitCellBoundsCuda(test_cells);
         InitMeshBoundsCuda(test_meshboxes);
 
-        InitOutRaysCuda(test_cells.size(), test_meshboxes.size(), 1, 1);
-        ComputeOutRaysCuda(test_cells.size(), test_meshboxes.size(), 1, 1, 0, 0);
+
+        const int s1 = 30;
+        const int s2 = 30;
+
+        InitOutRaysCuda(test_cells.size(), test_meshboxes.size(), s1, s2);
+        InitResults(test_cells.size(), test_meshboxes.size(), s1, s2);
+        ComputeOutRaysCuda(test_cells.size(), test_meshboxes.size(), s1, s2, 0, 0); // ³ß´çÎÊÌâ
 
         std::vector<RayCuda<float4>> test_out_rays = GetOutRaysFromCuda();
 
@@ -369,5 +374,53 @@ namespace GPU4UE
 
             std::cout << std::endl;
         }
+
+        //triangles
+        int numTriangles = 3;
+        std::vector<TriangleCuda<float4>> triangles(numTriangles);
+        for (int i = 0; i < numTriangles; i++)
+        {
+            if (i == 0)
+            {
+                triangles[i] = {
+                    float4{-1.0f, -1.0f, 2.0f, 0.0f},
+                    float4{1.0f, -1.0f, 2.0f, 0.0f},
+                    float4{0.0f, 1.0f, 2.0f, 0.0f}
+                };
+            }
+            else if (i == 1)
+            {
+                triangles[i] = triangles[0];
+                triangles[i].vertices[0].y += 7.0f;
+                triangles[i].vertices[1].y += 7.0f;
+                triangles[i].vertices[2].y += 7.0f;
+            }
+            else if (i == 2)
+            {
+                triangles[i] = triangles[0];
+                triangles[i].vertices[0].y += -9.0f;
+                triangles[i].vertices[1].y += -9.0f;
+                triangles[i].vertices[2].y += -9.0f;
+            }
+        }
+
+        InitBVH(triangles);
+        ParallelRaysIntersectionWithBVHCuda3();
+
+        int* my_result = GetHostResults();
+
+        size_t dev_out_rays_length = GetDevOutRaysLength();
+
+        std::cout << "dev_out_rays_length: " << dev_out_rays_length << std::endl;
+
+        for (int i = 0; i < dev_out_rays_length; i++)
+        {
+
+            std::cout << my_result[i] << " ";
+
+        }
+
+        std::cout << std::endl;
+
     }
 }

@@ -16,15 +16,35 @@ namespace GPU4UE
 
 	void ParallelRaysIntersectionWithBVHCuda2(std::vector<RayCuda<float4>>& rays, int* results);
 
+	/*
+		暂时没用上
+	*/
+	void ParallelRaysIntersectionWithBVHAndRaysCuda2(int* results);
+
 	void InitCellBoundsCuda(std::vector<BoundBoxCuda>& cells);
 
 	void InitMeshBoundsCuda(std::vector<BoundBoxCuda>& meshboxes);
 
 	void InitOutRaysCuda(size_t num_cells, size_t num_meshboxes, size_t num_cell_sample, size_t num_meshbox_sample);
 
+	void InitResults(size_t num_cells, size_t num_meshboxes, size_t num_cell_sample, size_t num_meshbox_sample);
+
 	void ComputeOutRaysCuda(size_t num_cells, size_t num_meshboxes, size_t num_cell_sample, size_t num_meshbox_sample, int st, int ed);
 
+	/*
+	* Just debug use
+	*/
 	std::vector<RayCuda<float4>> GetOutRaysFromCuda();
+
+
+	/*
+		无需提供ray，而是直接使用已经在GPU上生成的光线去做求交，且求交结果会先传回host后放在全局
+	*/
+	void ParallelRaysIntersectionWithBVHCuda3();
+
+	int* GetHostResults();
+
+	size_t GetDevOutRaysLength();
 
 	int Test(int a, int b);
 }
