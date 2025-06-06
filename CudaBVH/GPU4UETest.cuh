@@ -322,7 +322,30 @@ namespace GPU4UE
         // cells & meshbox
         std::vector<BoundBoxCuda> test_cells, test_meshboxes;
 
-        for (int i = 0; i < 3; i++)
+        int s_cells = 3;
+        int s_meshboxes = 3;
+        std::cin >> s_cells >> s_meshboxes;
+
+        //for (int i = 0; i < s0; i++)
+        //{
+        //    test_cells.push_back(
+        //        {
+        //            { 1.0f * i, 0.0f, 0.0f, 0.0f },
+        //            { 1.0f * (i+1), 1.0f, 1.0f, 0.0f }
+        //        }
+        //    );
+
+
+        //    test_meshboxes.push_back(
+        //        {
+        //            { 1.0f * i, 5.0f, 5.0f, 0.0f },
+        //            { 1.0f * (i + 1), 6.0f, 6.0f, 0.0f }
+        //        }
+        //    );
+        //}
+
+
+        for (int i = 0; i < s_cells; i++)
         {
             test_cells.push_back(
                 {
@@ -330,8 +353,10 @@ namespace GPU4UE
                     { 1.0f * (i+1), 1.0f, 1.0f, 0.0f }
                 }
             );
+        }
 
-
+        for (int i=0; i < s_meshboxes; i++)
+        {
             test_meshboxes.push_back(
                 {
                     { 1.0f * i, 5.0f, 5.0f, 0.0f },
@@ -340,39 +365,56 @@ namespace GPU4UE
             );
         }
 
+
+
         InitCellBoundsCuda(test_cells);
+        std::cout << "InitCellBoundsCuda Done" << std::endl;
+
         InitMeshBoundsCuda(test_meshboxes);
+        std::cout << "InitMeshBoundsCuda Done" << std::endl;
 
+        int s1 = 24;
+        int s2 = 32;
 
-        const int s1 = 30;
-        const int s2 = 30;
+        std::cin >> s1 >> s2;
 
         InitOutRaysCuda(test_cells.size(), test_meshboxes.size(), s1, s2);
+        std::cout << "InitOutRaysCuda Done" << std::endl;
+
         InitResults(test_cells.size(), test_meshboxes.size(), s1, s2);
+        std::cout << "InitResults Done" << std::endl;
+
         ComputeOutRaysCuda(test_cells.size(), test_meshboxes.size(), s1, s2, 0, 0); // 尺寸问题
+        std::cout << "ComputeOutRaysCuda Done" << std::endl;
 
-        std::vector<RayCuda<float4>> test_out_rays = GetOutRaysFromCuda();
+        int s_show_ray = 0;
+        int s_show_res = 0;
 
+        std::cin >> s_show_ray >> s_show_res;
 
-        for (int i = 0; i < test_out_rays.size(); i++)
+        if (s_show_ray)
         {
-            RayCuda<float4>& ray = test_out_rays[i];
-            std::cout << "i: " << i << std::endl;
-            std::cout << "(" << ray.origin.x << ", " << ray.origin.y << ", " << ray.origin.z << ")";
-            std::cout << "(" << ray.dir.x << ", " << ray.dir.y << ", " << ray.dir.z << ")";
+            std::vector<RayCuda<float4>> test_out_rays = GetOutRaysFromCuda();
+            for (int i = 0; i < test_out_rays.size(); i++)
+            {
+                RayCuda<float4>& ray = test_out_rays[i];
+                std::cout << "i: " << i << std::endl;
+                std::cout << "(" << ray.origin.x << ", " << ray.origin.y << ", " << ray.origin.z << ")";
+                std::cout << "(" << ray.dir.x << ", " << ray.dir.y << ", " << ray.dir.z << ")";
 
-            // 计算一下end
-            float4 end_point;
-            end_point.x = ray.origin.x + (ray.dir.x * ray.t);
-            end_point.y = ray.origin.y + (ray.dir.y * ray.t);
-            end_point.z = ray.origin.z + (ray.dir.z * ray.t);
+                // 计算一下end
+                float4 end_point;
+                end_point.x = ray.origin.x + (ray.dir.x * ray.t);
+                end_point.y = ray.origin.y + (ray.dir.y * ray.t);
+                end_point.z = ray.origin.z + (ray.dir.z * ray.t);
 
 
-            std::cout << " t: " << ray.t << " ";
+                std::cout << " t: " << ray.t << " ";
 
-            std::cout << "(" << end_point.x << ", " << end_point.y << ", " << end_point.z << ")";
+                std::cout << "(" << end_point.x << ", " << end_point.y << ", " << end_point.z << ")";
 
-            std::cout << std::endl;
+                std::cout << std::endl;
+            }
         }
 
         //triangles
@@ -405,19 +447,26 @@ namespace GPU4UE
         }
 
         InitBVH(triangles);
+        std::cout << "InitBVH Done" << std::endl;
+
         ParallelRaysIntersectionWithBVHCuda3();
+        std::cout << "ParallelRaysIntersectionWithBVHCuda3 Done" << std::endl;
+
 
         int* my_result = GetHostResults();
+        std::cout << "GetHostResults Done" << std::endl;
 
         size_t dev_out_rays_length = GetDevOutRaysLength();
+        std::cout << "GetDevOutRaysLength Done" << std::endl;
 
         std::cout << "dev_out_rays_length: " << dev_out_rays_length << std::endl;
 
-        for (int i = 0; i < dev_out_rays_length; i++)
+        if (s_show_res)
         {
-
-            std::cout << my_result[i] << " ";
-
+            for (int i = 0; i < dev_out_rays_length; i++)
+            {
+                std::cout << my_result[i] << " ";
+            }
         }
 
         std::cout << std::endl;

@@ -44,6 +44,8 @@ namespace GPU4UE
 
 	int* GetHostResults();
 
+	std::vector<int> GetHostResultsVec();
+
 	size_t GetDevOutRaysLength();
 
 	int Test(int a, int b);
