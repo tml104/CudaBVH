@@ -20,6 +20,8 @@
 
 #include "GPU4UEInterfaces.cuh"
 
+#include "JsonExport.cuh"
+
 namespace GPU4UE
 {
 	void Test1()
@@ -212,7 +214,6 @@ namespace GPU4UE
         std::cout << std::endl;
     }
 
-
     void Test3()
     {
         // rays
@@ -316,6 +317,8 @@ namespace GPU4UE
 
     /*
         测试GPU上的包围盒上光线采样
+        3 3 24 30 0 0
+        3 3 5 5 0 0
     */
     void Test4()
     {
@@ -365,7 +368,8 @@ namespace GPU4UE
             );
         }
 
-
+        CellToJson(test_cells, "C:\\hqh\\code\\UnrealEngine\\Engine\\Saved\\Swarm\\Engine\\Programs\\UnrealLightmass\\Saved\\Logs\\cell_json.json");
+        CellToJson(test_meshboxes, "C:\\hqh\\code\\UnrealEngine\\Engine\\Saved\\Swarm\\Engine\\Programs\\UnrealLightmass\\Saved\\Logs\\meshbox_json.json");
 
         InitCellBoundsCuda(test_cells);
         std::cout << "InitCellBoundsCuda Done" << std::endl;
@@ -392,9 +396,9 @@ namespace GPU4UE
 
         std::cin >> s_show_ray >> s_show_res;
 
+        std::vector<RayCuda<float4>> test_out_rays = GetOutRaysFromCuda();
         if (s_show_ray)
         {
-            std::vector<RayCuda<float4>> test_out_rays = GetOutRaysFromCuda();
             for (int i = 0; i < test_out_rays.size(); i++)
             {
                 RayCuda<float4>& ray = test_out_rays[i];
@@ -460,6 +464,9 @@ namespace GPU4UE
         std::cout << "GetDevOutRaysLength Done" << std::endl;
 
         std::cout << "dev_out_rays_length: " << dev_out_rays_length << std::endl;
+
+        RayToJson(test_out_rays, my_result, s_cells, s_meshboxes, s1, s2, "C:\\hqh\\code\\UnrealEngine\\Engine\\Saved\\Swarm\\Engine\\Programs\\UnrealLightmass\\Saved\\Logs\\rays_json.json");
+
 
         if (s_show_res)
         {

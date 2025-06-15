@@ -18,6 +18,7 @@
     <CudaCompile Include="bvh.cuh" />
     <CudaCompile Include="CudaHeader.cu" />
     <CudaCompile Include="GPU4UEInterfaces.cu" />
+    <CudaCompile Include="JsonExport.cu" />
     <CudaCompile Include="main.cu" />
     <CudaCompile Include="utility.cuh" />
   </ItemGroup>
@@ -29,6 +30,8 @@
     <ClInclude Include="Geometry.cuh" />
     <ClInclude Include="GPU4UEInterfaces.cuh" />
     <ClInclude Include="GPU4UETest.cuh" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="JsonExport.cuh" />
     <ClInclude Include="lbvh.cuh" />
     <ClInclude Include="MonteCarlo.cuh" />
     <ClInclude Include="morton_code.cuh" />

@@ -10,6 +10,9 @@
     <Filter Include="GPU4UE\CudaTestInclude">
       <UniqueIdentifier>{635aa63a-56e0-4533-b60d-da5eacecf0a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GPU4UE\JsonExport">
+      <UniqueIdentifier>{78438208-eab8-4055-afc4-b8352d31cced}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="bvh.cuh">
@@ -23,6 +26,9 @@
       <Filter>GPU4UE</Filter>
     </CudaCompile>
     <CudaCompile Include="CudaHeader.cu" />
+    <CudaCompile Include="JsonExport.cu">
+      <Filter>GPU4UE\JsonExport</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aabb.cuh">
@@ -63,6 +69,12 @@
     </ClInclude>
     <ClInclude Include="ComputeOutRaysWithCuda.cuh">
       <Filter>GPU4UE</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonExport.cuh">
+      <Filter>GPU4UE\JsonExport</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>GPU4UE\JsonExport</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
