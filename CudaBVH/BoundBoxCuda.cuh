@@ -9,7 +9,7 @@ namespace GPU4UE
 {
 	struct BoundBoxCuda
 	{
-		float4 minval; // ÕâÀïÖ»ÓÃxyz£¬wµÄÖµÇëÎÞÊÓ
+		float4 minval; // ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½xyzï¿½ï¿½wï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		
 		float4 maxval;
 	};
@@ -47,7 +47,7 @@ namespace GPU4UE
 	__device__  __host__
 		inline float dot3(const float4& a, const float4& b)
 		{
-			return sqrt(a.x * b.x + a.y * b.y + a.z * b.z);
+			return a.x * b.x + a.y * b.y + a.z * b.z;
 		}
 
 	struct FAxisAlignedCellFace
