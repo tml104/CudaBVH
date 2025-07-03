@@ -117,8 +117,12 @@ namespace GPU4UE
 		//size_t threads_per_block = 256;
 		//size_t blocks_per_grid = (dev_out_rays_length +threads_per_block - 1) / threads_per_block;
 
-		dim3 threads_rect(num_cell_sample, num_meshbox_sample); // x,y
-		dim3 blocks_rect(num_cells, num_meshboxes); // x,y
+		//dim3 threads_rect(num_cell_sample, num_meshbox_sample); // x,y
+		//dim3 blocks_rect(num_cells, num_meshboxes); // x,y
+
+		// 注意：x是变化最快的，所以可能得反着写
+		dim3 threads_rect(num_meshbox_sample, num_cell_sample);
+		dim3 blocks_rect(num_meshboxes, num_cells);
 
 		SetupCuRand << < blocks_rect, threads_rect >> > (device_states, seed, dev_out_rays_length);
 		CUDA_CALL(cudaGetLastError());

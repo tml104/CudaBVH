@@ -142,11 +142,11 @@ namespace GPU4UE
 
 	__global__ void GetOutRaysKernel(BoundBoxCuda* dev_cells, BoundBoxCuda* dev_meshboxes, RayCuda<float4>* dev_out_rays, curandState_t* dev_states,size_t num_cells, size_t num_meshboxes, size_t num_cell_sample, size_t num_meshbox_sample, size_t dev_out_rays_length)
 	{
-		const unsigned int cell_sample_id = threadIdx.x;
-		const unsigned int meshbox_sample_id = threadIdx.y;
+		const unsigned int cell_sample_id = threadIdx.y;
+		const unsigned int meshbox_sample_id = threadIdx.x;
 
-		const unsigned int cell_id = blockIdx.x;
-		const unsigned int meshbox_id = blockIdx.y;
+		const unsigned int cell_id = blockIdx.y;
+		const unsigned int meshbox_id = blockIdx.x;
 
 		const unsigned int bid = blockIdx.y * gridDim.x + blockIdx.x; // block id
 		const unsigned int tid = threadIdx.y * blockDim.x + threadIdx.x; // thread id
