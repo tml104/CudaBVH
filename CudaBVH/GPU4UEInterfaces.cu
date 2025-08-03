@@ -99,7 +99,6 @@ namespace GPU4UE
 
 		//CUDA_CALL(cudaMallocHost((void**)&host_results, length * sizeof(int)));
 		host_results = new int[length];
-		host_results_vec.clear();
 	}
 
 	// 多线程call this
@@ -172,7 +171,7 @@ namespace GPU4UE
 		ParallelRaysIntersectionWithBVHAndRaysCuda(dev_out_rays, num_rays, bvh_dev, results);
 	}
 
-	void ParallelRaysIntersectionWithBVHCuda3()
+	void ParallelRaysIntersectionWithBVHAndRaysCuda3()
 	{
 		size_t num_rays = dev_out_rays_length;
 
@@ -180,17 +179,20 @@ namespace GPU4UE
 
 		// 利用gpu bvh求交
 		ParallelRaysIntersectionWithBVHAndRaysCuda(dev_out_rays, num_rays, bvh_dev, host_results);
-
-		for (int i = 0; i < dev_out_rays_length; i++)
-		{
-			host_results_vec.emplace_back(host_results[i]);
-		}
-
 	}
 
 	int* GetHostResults()
 	{
 		return host_results;
+	}
+
+	void CopyHostResultsToVec()
+	{
+		host_results_vec.clear();
+		for (int i = 0; i < dev_out_rays_length; i++)
+		{
+			host_results_vec.emplace_back(host_results[i]);
+		}
 	}
 
 	std::vector<int> GetHostResultsVec()

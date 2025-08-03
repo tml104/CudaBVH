@@ -40,9 +40,11 @@ namespace GPU4UE
 	/*
 		无需提供ray，而是直接使用已经在GPU上生成的光线去做求交，且求交结果会先传回host后放在全局
 	*/
-	void ParallelRaysIntersectionWithBVHCuda3();
+	void ParallelRaysIntersectionWithBVHAndRaysCuda3();
 
 	int* GetHostResults();
+
+	void CopyHostResultsToVec();
 
 	std::vector<int> GetHostResultsVec();
 

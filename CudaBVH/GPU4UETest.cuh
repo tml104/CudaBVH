@@ -453,7 +453,7 @@ namespace GPU4UE
         InitBVH(triangles);
         std::cout << "InitBVH Done" << std::endl;
 
-        ParallelRaysIntersectionWithBVHCuda3();
+        ParallelRaysIntersectionWithBVHAndRaysCuda3();
         std::cout << "ParallelRaysIntersectionWithBVHCuda3 Done" << std::endl;
 
 
