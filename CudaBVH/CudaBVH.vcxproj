@@ -41,6 +41,9 @@
     <ClInclude Include="TriangleCudaAABBGetter.cuh" />
     <ClInclude Include="VecType.cuh" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2C2F0529-0CDC-4EE0-ACFF-0458E7DA0F3C}</ProjectGuid>
     <RootNamespace>CudaBVH</RootNamespace>
